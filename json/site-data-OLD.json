@@ -1,0 +1,451 @@
+{
+	"modelParts": [
+		
+		{
+			"label": "antenna",
+			"obj":"lo_model/antenna.obj",
+			"mtl":"lo_model/antenna.mtl",
+			"color": "paint"
+		},
+		{
+			"label": "body_panels",
+			"obj":"lo_model/body_panels.obj",
+			"mtl":"lo_model/body_panels.mtl",
+			"color": "paint"
+		},
+		{
+			"label": "body_panels",
+			"obj":"lo_model/body_panels.obj",
+			"mtl":"lo_model/body_panels.mtl",
+			"flip": "true",
+			"color": "paint"
+		},
+		{
+			"label": "bumper_FR_trim",
+			"obj":"lo_model/bumper_FR_trim.obj",
+			"mtl":"lo_model/bumper_FR_trim.mtl",
+			"color": "paint"
+		},
+		{
+			"label": "bumper_lens",
+			"obj":"lo_model/bumper_lens.obj",
+			"mtl":"lo_model/bumper_lens.mtl"
+		},
+		{
+			"label": "bumper_lens",
+			"obj":"lo_model/bumper_lens.obj",
+			"mtl":"lo_model/bumper_lens.mtl",
+			"flip": "true"
+		},
+		{
+			"label": "bumper_RR",
+			"obj":"lo_model/bumper_RR.obj",
+			"mtl":"lo_model/bumper_RR.mtl",
+			"color": "paint"
+		},
+		{
+			"label": "bumper_trim_FR",
+			"obj":"lo_model/bumper_trim_FR.obj",
+			"mtl":"lo_model/bumper_trim_FR.mtl",
+			"color": "0x111111"
+		},
+		{
+			"label": "bumper_trim",
+			"obj":"lo_model/bumper_trim.obj",
+			"mtl":"lo_model/bumper_trim.mtl",
+			"color": "0x111111"
+		},
+		{
+			"label": "door_handles",
+			"obj":"lo_model/door_handles.obj",
+			"mtl":"lo_model/door_handles.mtl",
+			"color": "paint"
+		},
+		{
+			"label": "door_handles",
+			"obj":"lo_model/door_handles.obj",
+			"mtl":"lo_model/door_handles.mtl",
+			"flip": "true",
+			"color": "paint"
+		},
+		{
+			"label": "fog_liight_trim_2",
+			"obj":"lo_model/fog_liight_trim_2.obj",
+			"mtl":"lo_model/fog_liight_trim_2.mtl"
+		},
+		{
+			"label": "fog_liight_trim_2",
+			"obj":"lo_model/fog_liight_trim_2.obj",
+			"mtl":"lo_model/fog_liight_trim_2.mtl",
+			"flip": "true"
+		},
+		{
+			"label": "foglight_lens",
+			"obj":"lo_model/foglight_lens.obj",
+			"mtl":"lo_model/foglight_lens.mtl"
+		},
+		{
+			"label": "foglight_lens",
+			"obj":"lo_model/foglight_lens.obj",
+			"mtl":"lo_model/foglight_lens.mtl",
+			"flip": "true"
+		},
+		{
+			"label": "foglight_trim",
+			"obj":"lo_model/foglight_trim.obj",
+			"mtl":"lo_model/foglight_trim.mtl"
+		},
+		{
+			"label": "foglight_trim",
+			"obj":"lo_model/foglight_trim.obj",
+			"mtl":"lo_model/foglight_trim.mtl",
+			"flip": "true"
+		},
+		{
+			"label": "grill_corner",
+			"obj":"lo_model/grill_corner.obj",
+			"mtl":"lo_model/grill_corner.mtl"
+		},
+		{
+			"label": "grill_corner",
+			"obj":"lo_model/grill_corner.obj",
+			"mtl":"lo_model/grill_corner.mtl",
+			"flip": "true"
+		},
+		{
+			"label": "grill_trim_2",
+			"obj":"lo_model/grill_trim_2.obj",
+			"mtl":"lo_model/grill_trim_2.mtl"
+		},
+		{
+			"label": "grill_trim",
+			"obj":"lo_model/grill_trim.obj",
+			"mtl":"lo_model/grill_trim.mtl"
+		},
+		{
+			"label": "grill",
+			"obj":"lo_model/grill.obj",
+			"mtl":"lo_model/grill.mtl"
+		},
+		{
+			"label": "headlight_lens",
+			"obj":"lo_model/headlight_lens.obj",
+			"reflectivity":".5",
+			"mtl":"lo_model/headlight_lens.mtl"
+		},
+		{
+			"label": "headlight_lens",
+			"obj":"lo_model/headlight_lens.obj",
+			"mtl":"lo_model/headlight_lens.mtl",
+			"reflectivity":".5",
+			"flip": "true"
+		},
+		{
+			"label": "hood_tray",
+			"obj":"lo_model/hood_tray.obj",
+			"mtl":"lo_model/hood_tray.mtl"
+		},
+		{
+			"label": "hood",
+			"obj":"lo_model/hood.obj",
+			"mtl":"lo_model/hood.mtl",
+			"color": "paint"
+		},
+		{
+			"label": "logo_back_FR",
+			"obj":"lo_model/logo_back_FR.obj",
+			"mtl":"lo_model/logo_back_FR.mtl"
+		},
+		{
+			"label": "logo_FR",
+			"obj":"lo_model/logo_FR.obj",
+			"mtl":"lo_model/logo_FR.mtl",
+			"reflectivity":".5",
+			"color": "paint"
+		},
+		{
+			"label": "logo_RR",
+			"obj":"lo_model/logo_RR.obj",
+			"mtl":"lo_model/logo_RR.mtl",
+			"reflectivity":".5"
+		},
+		{
+			"label": "logo_trim_FR",
+			"obj":"lo_model/logo_trim_FR.obj",
+			"mtl":"lo_model/logo_trim_FR.mtl"
+		},
+		{
+			"label": "logo_trim_RR",
+			"obj":"lo_model/logo_trim_RR.obj",
+			"mtl":"lo_model/logo_trim_RR.mtl"
+		},
+		{
+			"label": "mirror_blinker_lens",
+			"obj":"lo_model/mirror_blinker_lens.obj",
+			"mtl":"lo_model/mirror_blinker_lens.mtl"
+		},
+		{
+			"label": "mirror_blinker_lens",
+			"obj":"lo_model/mirror_blinker_lens.obj",
+			"mtl":"lo_model/mirror_blinker_lens.mtl",
+			"flip": "true"
+		},
+		{
+			"label": "mirror_body",
+			"obj":"lo_model/mirror_body.obj",
+			"mtl":"lo_model/mirror_body.mtl",
+			"color": "paint"
+		},
+		{
+			"label": "mirror_body",
+			"obj":"lo_model/mirror_body.obj",
+			"mtl":"lo_model/mirror_body.mtl",
+			"flip": "true",
+			"color": "paint"
+		},
+		{
+			"label": "mirror_chrome",
+			"obj":"lo_model/mirror_chrome.obj",
+			"mtl":"lo_model/mirror_chrome.mtl",
+			"reflectivity":".5"
+		},
+		{
+			"label": "mirror_chrome",
+			"obj":"lo_model/mirror_chrome.obj",
+			"mtl":"lo_model/mirror_chrome.mtl",
+			"flip": "true",
+			"reflectivity":".5"
+		},
+		{
+			"label": "mirror",
+			"obj":"lo_model/mirror.obj",
+			"mtl":"lo_model/mirror.mtl",
+			"reflectivity":".9"
+		},
+		{
+			"label": "mirror",
+			"obj":"lo_model/mirror.obj",
+			"mtl":"lo_model/mirror.mtl",
+			"flip": "true",
+			"reflectivity":".5"
+		},
+		{
+			"label": "muffler",
+			"obj":"lo_model/muffler.obj",
+			"mtl":"lo_model/muffler.mtl"
+		},
+		{
+			"label": "muffler",
+			"obj":"lo_model/muffler.obj",
+			"mtl":"lo_model/muffler.mtl",
+			"flip": "true"
+		},
+		{
+			"label": "quarter_panel_DS_RR",
+			"obj":"lo_model/quarter_panel_DS_RR.obj",
+			"mtl":"lo_model/quarter_panel_DS_RR.mtl",
+			"color": "paint"
+		},
+		{
+			"label": "quarter_panel_PS_RR",
+			"obj":"lo_model/quarter_panel_PS_RR.obj",
+			"mtl":"lo_model/quarter_panel_PS_RR.mtl",
+			"color": "paint"
+		},
+		{
+			"label": "roof_glass",
+			"obj":"lo_model/roof_glass.obj",
+			"mtl":"lo_model/roof_glass.mtl",
+			"reflectivity":".5"
+		},
+		{
+			"label": "roof_trim",
+			"obj":"lo_model/roof_trim.obj",
+			"mtl":"lo_model/roof_trim.mtl",
+			"color": "paint"
+		},
+		{
+			"label": "roof",
+			"obj":"lo_model/roof.obj",
+			"mtl":"lo_model/roof.mtl",
+			"reflectivity":".5"
+		},
+		{
+			"label": "rubber",
+			"obj":"lo_model/rubber.obj",
+			"mtl":"lo_model/rubber.mtl",
+			"color": "paint",
+			"color": "paint"
+		},
+		{
+			"label": "spoiler_bottom_RR",
+			"obj":"lo_model/spoiler_bottom_RR.obj",
+			"mtl":"lo_model/spoiler_bottom_RR.mtl"
+		},
+		{
+			"label": "spoiler_lens_trim_RR",
+			"obj":"lo_model/spoiler_lens_trim_RR.obj",
+			"mtl":"lo_model/spoiler_lens_trim_RR.mtl"
+		},
+		{
+			"label": "spoiler_light_lens",
+			"obj":"lo_model/spoiler_light_lens.obj",
+			"mtl":"lo_model/spoiler_light_lens.mtl",
+			"reflectivity":".5"
+		},
+		{
+			"label": "spoiler_RR",
+			"obj":"lo_model/spoiler_RR.obj",
+			"mtl":"lo_model/spoiler_RR.mtl",
+			"color": "paint"
+		},
+		{
+			"label": "taillight_1",
+			"obj":"lo_model/taillight_1.obj",
+			"mtl":"lo_model/taillight_1.mtl",
+			"color": "0x8d1414",
+			"reflectivity":".5"
+		},
+		{
+			"label": "taillight_1",
+			"obj":"lo_model/taillight_1.obj",
+			"mtl":"lo_model/taillight_1.mtl",
+			"flip": "true",
+			"color": "0x8d1414",
+			"reflectivity":".5"
+		},
+		{
+			"label": "taillight_2",
+			"obj":"lo_model/taillight_2.obj",
+			"mtl":"lo_model/taillight_2.mtl",
+			"color": "0xcccccc",
+			"reflectivity":".5"
+		},
+		{
+			"label": "taillight_2",
+			"obj":"lo_model/taillight_2.obj",
+			"mtl":"lo_model/taillight_2.mtl",
+			"flip": "true",
+			"color": "0xcccccc",
+			"reflectivity":".5"
+		},
+		{
+			"label": "trim_trunk",
+			"obj":"lo_model/trim_trunk.obj",
+			"mtl":"lo_model/trim_trunk.mtl"
+		},
+		{
+			"label": "trim_trunk",
+			"obj":"lo_model/trim_trunk.obj",
+			"mtl":"lo_model/trim_trunk.mtl",
+			"flip": "true"
+		},
+		{
+			"label": "trunk_handle",
+			"obj":"lo_model/trunk_handle.obj",
+			"mtl":"lo_model/trunk_handle.mtl"
+		},
+		{
+			"label": "trunk",
+			"obj":"lo_model/trunk.obj",
+			"mtl":"lo_model/trunk.mtl",
+			"color": "paint"
+		},
+		{
+			"label": "under_carriage",
+			"obj":"lo_model/under_carriage.obj",
+			"mtl":"lo_model/under_carriage.mtl"
+		},
+		{
+			"label": "wheel_well_trim",
+			"obj":"lo_model/wheel_well_trim.obj",
+			"mtl":"lo_model/wheel_well_trim.mtl",
+			"color": "0x111111"
+		},
+		{
+			"label": "wheel_well_trim",
+			"obj":"lo_model/wheel_well_trim.obj",
+			"mtl":"lo_model/wheel_well_trim.mtl",
+			"flip": "true",
+			"color": "0x111111"
+		},
+		{
+			"label": "wheel_well",
+			"obj":"lo_model/wheel_well.obj",
+			"mtl":"lo_model/wheel_well.mtl"
+		},
+		{
+			"label": "wheel_well",
+			"obj":"lo_model/wheel_well.obj",
+			"mtl":"lo_model/wheel_well.mtl",
+			"flip": "true"
+		},
+		{
+			"label": "window_FR",
+			"obj":"lo_model/window_FR.obj",
+			"mtl":"lo_model/window_FR.mtl",
+			"reflectivity":".5"
+		},
+		{
+			"label": "window_RR",
+			"obj":"lo_model/window_RR.obj",
+			"mtl":"lo_model/window_RR.mtl",
+			"reflectivity":".5"
+		},
+
+		{
+			"label": "window_trim",
+			"obj":"lo_model/window_trim.obj",
+			"mtl":"lo_model/window_trim.mtl"
+		},
+		{
+			"label": "window_trim",
+			"obj":"lo_model/window_trim.obj",
+			"mtl":"lo_model/window_trim.mtl",
+			"flip": "true"
+		},
+		{
+			"label": "windows",
+			"obj":"lo_model/windows.obj",
+			"mtl":"lo_model/windows.mtl",
+			"reflectivity":".5"
+		},
+		{
+			"label": "windows",
+			"obj":"lo_model/windows.obj",
+			"mtl":"lo_model/windows.mtl",
+			"flip": "true",
+			"reflectivity":".5"
+		}
+	],
+	"wheels": [
+		{
+			"obj":"lo_model/tire_sidewall.obj",
+			"mtl":"lo_model/tire_sidewall.mtl",
+			"color": "0x000000"
+		},
+		{
+			"obj":"lo_model/tire_tread.obj",
+			"mtl":"lo_model/tire_tread.mtl",
+			"color": "0x000000"
+		},
+		{
+			"obj":"lo_model/brake_rotor.obj",
+			"mtl":"lo_model/brake_rotor.mtl",
+			"reflectivity":".2",
+			"color": "0x111111"
+		},
+		{
+			"obj":"lo_model/brake_caliper.obj",
+			"mtl":"lo_model/brake_caliper.mtl",
+			"reflectivity":".2",
+			"color": "0x111111"
+		},
+		{
+			"obj":"lo_model/rim.obj",
+			"mtl":"lo_model/rim.mtl",
+			"reflectivity":".2",
+			"color": "0x111111"
+		}
+	]
+}

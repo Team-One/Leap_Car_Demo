@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>LEXUS THEME VIZ</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link href='https://fonts.googleapis.com/css?family=Roboto:400' rel='stylesheet' type='text/css'>
+		<style>
+			body {
+				margin: 0px;
+				background-color: #000000;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+	<body>
+
+		<script src="../lib/three.min.js"></script>
+		<script src="../lib/stats.min.js"></script>
+		<script src="../lib/atutil.js"></script>
+		<script src="../lib/OrbitControls.js"></script>
+		<script src="../lib/SpinControls.js"></script>
+		<script src="../lib/SimplexNoise.js"></script>
+		<script src="../lib/ImprovedNoise.js"></script>
+		<script src="../lib/ConvexGeometry.js"></script>
+		<script src="../lib/dat.gui.min.js"></script>
+		<script src="../lib/TweenMax.min.js"></script>
+
+		<script>
+
+			/* global THREE, Stats, ATUtil, dat , TweenLite, SpinControls */
+
+			/*
+				toggle 4- 15 words to show as Platonic solids
+				words are sides or nodes?
+				add/remove sides easily
+				use megnetic attraction/replusion to form sheres of nodes
+				join with lines
+			*/
+
+			var camera, scene, renderer;
+			var stats;
+			var controls;
+
+			var showingItemCount = 4;
+			var items = [];
+			var sceneHolder ;
+
+			var BOUNDS = 500;
+			var MAX_ITEMS = 20;
+
+			//var renderTime = 0;
+
+			var guiParams = {};
+
+			var nodeImg;
+
+			var textureLoader;
+
+			var wireMesh;
+			var wireLines;
+			var phongMesh;
+			var convexGeometry;
+
+
+			var zero = new THREE.Vector3();
+
+			var itemWords = ['luxury', 'design', 'reliability','affluence','comfort','enjoyment','extravagance','leisure','opulence','richness','arrangement','composition','drawing','form','idea','accuracy','authenticity','honesty','loyalty','safety','security',];
+
+			init();
+
+			function init() {
+
+				renderer = new THREE.WebGLRenderer();
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				document.body.appendChild( renderer.domElement );
+				renderer.sortObjects = false;
+
+				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
+				camera.position.z = 1300;
+				scene = new THREE.Scene();
+
+				sceneHolder = new THREE.Object3D();
+				scene.add( sceneHolder );
+
+				var ambientLight = new THREE.AmbientLight( 0x000000 );
+				scene.add( ambientLight );
+
+				var lights = [];
+				lights[ 0 ] = new THREE.PointLight( 0xffffff, 1, 0 );
+				lights[ 1 ] = new THREE.PointLight( 0xffffff, 1, 0 );
+				lights[ 2 ] = new THREE.PointLight( 0xffffff, 1, 0 );
+
+				lights[ 0 ].position.set( 0, 1500, 0 );
+				lights[ 1 ].position.set( 700, 1500, 700 );
+				lights[ 2 ].position.set( - 700, - 1500, - 700 );
+
+				scene.add( lights[ 0 ] );
+				scene.add( lights[ 1 ] );
+				scene.add( lights[ 2 ] );
+
+				//controls
+				controls = new THREE.OrbitControls( camera, renderer.domElement );
+				controls.autoRotate = true;
+
+				//controls = new SpinControls( sceneHolder, camera, renderer.domElement );
+
+				//load texture
+				textureLoader = new THREE.TextureLoader();
+				nodeImg = textureLoader.load( 'res/ring.png');
+
+				textureLoader.load(
+					'res/ring.png',
+					function ( texture ) {
+						nodeImg = texture;
+						init2();
+					}
+				);
+			}
+
+			function init2(){
+
+				//INIT DAT GUI
+				var gui = new dat.GUI();
+
+				//init items
+				for (var i = 0; i < MAX_ITEMS; i++) {
+
+					var showing = i < showingItemCount;
+					//guiParams['item' + i] = showing;
+					guiParams['item-size' + i] = showing ? 1 : 0;
+					//gui.add(guiParams, 'item' + i).onChange(toggleItems).name(itemWords[i]);
+					gui.add(guiParams, 'item-size' + i, 0, 20).name(itemWords[i]).step(1).onChange(toggleItems);
+
+					var item = new Item();
+					item.init(sceneHolder,i,showing);
+					items.push(item);
+
+				}
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				stats.domElement.style.zIndex = 100;
+				document.body.appendChild( stats.domElement );
+
+				window.addEventListener( 'resize', onWindowResize, false );
+
+				toggleItems();
+
+				animate();
+
+			}
+
+
+			function toggleItems(){
+
+				//go thru check boxes
+
+				//show/hide items
+				items.forEach(function(item,i){
+
+					//console.log(guiParams['item-size' + i]);
+
+
+
+					item.toggle(guiParams['item-size' + i] > 0);
+					//resizeItems
+					item.repulsionFac = guiParams['item-size' + i];
+
+				});
+
+				setTimeout(buildHull,500);
+
+				//buildHull();
+
+			}
+
+			function buildHull(){
+
+				var wireMaterial = new THREE.MeshBasicMaterial({
+				color: 0xFFFFFF,
+				transparent: true,
+				opacity: 0.5,
+				wireframe: true,
+				depthTest:false,
+				depthWrite: false,
+				wireframeLinewidth: 1
+			});
+
+			// var phongMaterial = new THREE.MeshPhongMaterial({
+			// 	transparent: true,
+			// 	opacity: 0.3,
+
+			// 	specular: 0x666666,
+			// 	shininess: 30,
+			// 	color: 0x333333,
+
+
+			// 	//color: 0x156289,
+			// 	//emissive: 0x072534,
+
+			// 	//color: 0x156289,
+			// 	//emissive: 0x072534,
+
+
+
+			// 	shading: THREE.FlatShading,
+			// 	//sides: THREE.DoubleSide,
+			// 	depthTest:false,
+			// 	depthWrite: false,
+			// });
+
+
+				//create new convex hull
+				if (wireMesh !== undefined){
+					sceneHolder.remove(wireMesh);
+					//sceneHolder.remove(phongMesh);
+					//geometry.dispose();
+					//material.dispose();
+					//texture.dispose();
+				}
+
+				var points = [];
+				var showingItemCount = 0 ;
+				items.forEach(function(item){
+					if (item.isShowing) {
+						points.push(item.holder.position);
+						showingItemCount++;
+					}
+				});
+
+				convexGeometry = new THREE.ConvexGeometry(points);
+
+				//phongMesh = new THREE.Mesh(convexGeometry, phongMaterial);
+				wireMesh = new THREE.Mesh(convexGeometry, wireMaterial);
+				//wireLines =  new THREE.LineSegments(convexGeometry,lineMaterial);
+
+				//wireLines.renderOrder = 2; //put wiremesh on top
+
+				//sceneHolder.add(wireLines);
+				sceneHolder.add(wireMesh);
+				//sceneHolder.add(phongMesh);
+
+				//center geometry in 3d space
+				//calc bounding sphere
+				//tween centroid to world origin
+				convexGeometry.computeBoundingSphere();
+				var bs = convexGeometry.boundingSphere;
+				//console.log(bs);
+
+				//console.log('nodes: ' + showingItemCount + ' , faces: ' + convexGeometry.faces.length);
+
+				TweenLite.to(sceneHolder.position,0.5,{x:-bs.center.x,y:-bs.center.y,z:-bs.center.z});
+
+			}
+
+			function onWindowResize() {
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+			}
+
+			function animate() {
+
+				//renderTime += 0.01;
+
+				requestAnimationFrame( animate );
+				renderer.render(scene, camera);
+				stats.update();
+				controls.update();
+
+				//sceneHolder.rotation.x +=0.002;
+				//sceneHolder.rotation.y +=0.002;
+
+				//console.log('-------------------');
+
+				items.forEach(function(item){
+					item.update();
+				});
+
+				if (convexGeometry) convexGeometry.verticesNeedUpdate = true;
+				//convexGeometry.computeLineDistances();
+
+			}
+
+			function Item(){
+
+				// item is a sprite and a label
+
+
+				var hue;
+				var node;
+				var label;
+
+				var LABEL_WIDTH = 600;
+				var LABEL_HEIGHT = 50;
+
+				var force = new THREE.Vector3();
+				var vel = new THREE.Vector3();
+
+				var scope = this;
+
+				this.init = function(parentObj3D,id,show){
+
+					//PUBLIC API
+					this.id = id;
+					this.holder = new THREE.Object3D();
+					this.isShowing = false;
+					this.repulsionFac = 1;
+
+					parentObj3D.add( this.holder );
+					hue = this.id/MAX_ITEMS;
+
+					var col = new THREE.Color();
+					col.setHSL(hue, 0.9,0.5);
+
+					//node
+					var materialSp = new THREE.SpriteMaterial( {
+						map: nodeImg,
+						//color: col.getHex(),
+						blending: THREE.AdditiveBlending,
+						depthTest: false,
+						transparent : true,
+						opacity:0.6
+					} );
+
+					node = new THREE.Sprite(materialSp);
+					node.scale.set( 20, 20, 20 );
+					//node.scale.set( 60, 60, 60 );
+					this.holder.add(node);
+
+					this.holder.position.copy(ATUtil.randomVector3(BOUNDS));
+
+					//start item roughly in a sphere to avoid starting inside the gem
+					this.holder.position.normalize();
+					this.holder.position.multiplyScalar( BOUNDS );
+
+
+					//this.holder.position.set(0,0,0);
+					node.visible = false;
+
+					//LABEL
+
+					//write label text on canvas and use as material
+					var canvas = document.createElement('canvas');
+					canvas.width  = LABEL_WIDTH;
+					canvas.height = LABEL_HEIGHT;
+					var ctx = canvas.getContext('2d');
+					var labelTexture = new THREE.Texture(canvas);
+					labelTexture.minFilter  =  THREE.LinearFilter;
+					labelTexture.maxFilter  =  THREE.LinearFilter;
+
+					//debug background
+					//ctx.fillStyle = '#FF00FF';
+					//ctx.fillRect(0,0,LABEL_WIDTH,LABEL_HEIGHT);
+
+					//draw text
+					ctx.textBaseline = 'top';
+					ctx.fillStyle = '#FFFFFF';
+					//ctx.font = '400 30px Roboto';
+					ctx.font = '40px sans-serif';
+					//ctx.fillText( this.id + ': ' + itemWords[this.id], 0, 0);
+					ctx.fillText( itemWords[this.id], 350, 0);
+
+
+					//var labelGeom = new THREE.PlaneGeometry( LABEL_WIDTH,LABEL_HEIGHT, 1, 1);
+					var labelMaterial = new THREE.SpriteMaterial( {
+						map: labelTexture,
+						transparent: true,
+						depthTest:false,
+						depthWrite: false,
+						blending: THREE.AdditiveBlending,
+						opacity:0.8
+					} );
+
+					label = new THREE.Sprite(labelMaterial);
+					label.scale.set( LABEL_WIDTH, LABEL_HEIGHT, 1 );
+					this.holder.add(label);
+					//label.position.x = LABEL_WIDTH/2 + 75;
+
+
+					//labelTexture.offset.set( -0.5, -0.5 );
+
+					label.visible = show;
+					labelTexture.needsUpdate = true;
+
+					this.toggle(show);
+
+				};
+
+
+				this.toggle = function(show){
+
+					if (show === this.isShowing) return;
+
+					//show or hide this item
+					node.visible = show;
+					label.visible = show;
+
+					this.isShowing = show;
+
+
+				};
+
+				this.update = function(){
+
+					if (!this.isShowing) return;
+
+
+					//console.log(this.id);
+
+					//console.log('HELLO');
+
+					// based on pseudocode from http://en.wikipedia.org/wiki/Force-based_algorithms_%28graph_drawing%29
+
+					var damping = 0.01;
+					var timeStep = 0.2;
+
+					force.copy(zero);
+
+					//attraction
+					items.forEach(function(other) {
+
+
+						if(other.isShowing && this.id !== other.id  ) {
+
+							//console.log(this.id, other.id);
+							force.add(this.computeRepulsion(other));
+							force.add(this.computeAttraction(other));
+						}
+					},this);
+
+
+					vel = vel.add(force.multiplyScalar(timeStep)).multiplyScalar(damping);
+
+					//vx = (vx + timestep * fx) * damping;
+					//vy = (vy + timestep * fy) * damping;
+
+					this.holder.position.add(vel.multiplyScalar(timeStep));
+
+					//x = x + timestep * vx;
+					//y = y + timestep * vy;
+
+					var size = 1 + this.repulsionFac/20;
+					this.holder.scale.set( size,size,size );
+
+
+					//turn off distance scaling
+					node.scale.x = node.scale.y = v.subVectors( this.holder.position, camera.position ).length() / 20;
+					//v.setFromMatrixPosition( this.holder.matrixWorld );
+					//var scl = v.subtract(camera.position).length()/20;
+					//node.scale.set(scl,scl,scl);
+
+
+				};
+
+				var v = new THREE.Vector3;
+
+				this.computeRepulsion = function(other) {
+
+					//if (this.id === 0) console.log(this.repulsionFac);
+					var dist = this.holder.position.distanceTo(other.holder.position);
+
+					//console.log(dist);
+
+
+					//var f = (1000 * this.repulsionFac * other.repulsionFac) / dist ;
+					var f = 1000 / dist ;
+					var vec = new THREE.Vector3();
+					vec.subVectors(this.holder.position,other.holder.position);
+					vec.multiplyScalar(f);
+
+					//console.log('repl',vec);
+					return vec;
+
+				};
+
+				this.computeAttraction = function(other) {
+					var k = 80;
+					var idealDistance = 800;
+					var dist = this.holder.position.distanceTo(other.holder.position);
+					var f = - k * (dist - idealDistance);
+					var c = f / dist;
+
+					var vec = new THREE.Vector3();
+					vec.subVectors(this.holder.position,other.holder.position);
+					vec.multiplyScalar(c);
+
+					//console.log('attr',vec);
+					return vec;
+				};
+
+
+
+			}
+
+
+		</script>
+
+	</body>
+</html>

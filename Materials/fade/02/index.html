@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>fade test</title>
+
+
+	<style type="text/css">
+
+	#img-fader{
+		width: 734px;
+		height: 341px;
+		position:relative;
+		top: 40px;
+	}
+
+	.img-fade{
+		position:absolute;
+		top:0;
+	}
+
+	#debug{
+
+		position: absolute;
+		top:0;
+		left:0;
+		font-size: 20px;
+		color: #030;
+
+
+	}
+
+				</style>
+</head>
+<body>
+
+
+<div id="img-fader"></div>
+
+<div id="debug"></div>
+
+<script src="../lib/jquery-2.2.1.min.js"></script>
+<script src="../lib/lodash.min.js"></script>
+
+<script type="text/javascript">
+
+
+var $imgs =[];
+var fadeTime = 0;
+
+//var imgNames = ['01.jpg','30.jpg','60.jpg','70.jpg'];
+var imgNames = ['01.jpg','10.jpg','20.jpg','30.jpg','40.jpg','50.jpg','60.jpg','70.jpg'];
+
+var numImgs = imgNames.length;
+
+function init(){
+
+	for (var i = 0; i < numImgs; i++) {
+		var $img = $('<img class="img-fade">');
+		$img.attr('src', '../res/img/' + imgNames[i])
+		$img.attr('id','img' + i);
+		$('#img-fader').append($img);
+		//$img.css('top', i * 30 + 'px');
+		//$img.css('left', i * 30 + 'px');
+		$img.css('zindex', i );
+		$imgs.push($img);
+	}
+
+	update();
+}
+
+function update(){
+
+	//triangle wave
+	var triangle =  Math.abs(2 * (fadeTime % 1) - 1);
+	var imgId = triangle * (numImgs - 1) + 1 ;
+	var curImg = Math.floor(imgId);
+
+	for (var i = 0; i < numImgs; i++) {
+		$imgs[i].css('display', imgId > i ? 'block' : 'none');
+		if ( curImg === i){
+			$imgs[i].css('opacity',imgId % 1  );
+		}
+	}
+
+	fadeTime += 0.003;
+	$('#debug').text( imgId);
+	requestAnimationFrame( update );
+
+}
+
+init();
+
+
+</script>
+
+</body>
+</html>

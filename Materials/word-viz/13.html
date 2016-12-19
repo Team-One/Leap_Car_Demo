@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>LEXUS THEME VIZ</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link href='https://fonts.googleapis.com/css?family=Roboto:400' rel='stylesheet' type='text/css'>
+		<style>
+			body {
+				margin: 0px;
+				background-color: #000000;
+				overflow: hidden;
+				cursor: pointer;
+			}
+
+			.label {
+
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 200px;
+				height: 30px;
+				line-height: 30px;
+				font-family: sans-serif;
+				font-size: 20px;
+				/*background-color:rgba(0,255,0,0.3);*/
+				color: #FFF;
+				z-index: 999;
+				text-align: center;
+				pointer-events: none;
+
+				margin-left: -100px;
+				margin-top: -15px;
+
+			}
+
+			.dot{
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 20px;
+				height: 20px;
+				border-radius: 10px;
+				background-color: rgba(255,255,255,0.7);
+				margin-top: -10px;
+				margin-left: -10px;
+				pointer-events: none;
+			}
+
+
+			#measure-text{
+				position: absolute;
+				visibility: hidden;
+				height: auto;
+				width: auto;
+				white-space: nowrap; /* Thanks to Herb Caudill comment */
+				font-family: sans-serif;
+				font-size: 20px;
+			}
+
+			#debug{
+				z-index:999;
+				color : '#00FF00';
+				position: 'absolute';
+				bottom: '10px';
+				font-family: 'sans-serif';
+			}
+
+		</style>
+	</head>
+	<body>
+
+		<script src="../lib/three.min.js"></script>
+		<script src="../lib/stats.min.js"></script>
+		<script src="../lib/atutil.js"></script>
+		<script src="../lib/OrbitControls.js"></script>
+		<script src="../lib/SpinControls.js"></script>
+		<script src="../lib/SimplexNoise.js"></script>
+		<script src="../lib/ImprovedNoise.js"></script>
+		<script src="../lib/ConvexGeometry.js"></script>
+		<script src="../lib/dat.gui.min.js"></script>
+		<script src="../lib/TweenMax.min.js"></script>
+
+		<script>
+
+			/* global THREE, Stats, ATUtil, dat , TweenLite, TweenMax */
+
+			/*
+				toggle 4- 15 words to show as Platonic solids
+				words are sides or nodes?
+				add/remove sides easily
+				use megnetic attraction/replusion to form sheres of nodes
+				join with lines
+			*/
+
+			var itemWords = ['luxury', 'design', 'reliability','affluence','comfort','enjoyment','extravagance','leisure','opulence','richness','arrangement','composition','drawing','form','idea','accuracy','authenticity','honesty','loyalty','safety','security',];
+
+
+			var camera, scene, renderer;
+			var stats;
+			var controls;
+
+			var showingItemCount = 4;
+			var items = [];
+			var sceneHolder ;
+
+			var BOUNDS = 500;
+			var MAX_ITEMS = 20;
+
+			var guiParams = {shiftLabels: true};
+			var wireMesh;
+			var convexGeometry;
+			var winW;
+			var winH;
+			var wireMaterial;
+			var zero = new THREE.Vector3();
+
+			var measureText;
+
+			init();
+
+			function init() {
+
+				winW = window.innerWidth;
+				winH = window.innerHeight;
+
+				renderer = new THREE.WebGLRenderer();
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( winW,winH);
+				document.body.appendChild( renderer.domElement );
+				renderer.sortObjects = false;
+
+				camera = new THREE.PerspectiveCamera( 70, winW / winH, 1, 10000 );
+				camera.position.z = 1300;
+				scene = new THREE.Scene();
+
+				sceneHolder = new THREE.Object3D();
+				scene.add( sceneHolder );
+
+				//controls
+				controls = new THREE.OrbitControls( camera, renderer.domElement );
+				controls.autoRotate = true;
+
+				//controls = new SpinControls( sceneHolder, camera, renderer.domElement );
+
+				//INIT DAT GUI
+				var gui = new dat.GUI();
+				gui.domElement.style.zIndex = 999999;
+
+				gui.add(guiParams, 'shiftLabels', false).name('Shift Labels');
+
+				//xgui.domElement.style.position = 'absolute';
+
+
+				measureText = document.createElement('div');
+				measureText.id = 'measure-text';
+				document.body.appendChild(measureText);
+
+				//init items
+				for (var i = 0; i < MAX_ITEMS; i++) {
+
+					var showing = i < showingItemCount;
+					//guiParams['item' + i] = showing;
+					guiParams['item-size' + i] = showing ? 1 : 0;
+					//gui.add(guiParams, 'item' + i).onChange(toggleItems).name(itemWords[i]);
+					gui.add(guiParams, 'item-size' + i, 0, 10).name(itemWords[i]).step(1).onChange(toggleItems);
+
+					var item = new Item();
+					item.init(sceneHolder,i,showing);
+					items.push(item);
+
+				}
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				stats.domElement.style.zIndex = 100;
+				document.body.appendChild( stats.domElement );
+
+				window.addEventListener( 'resize', onWindowResize, false );
+				onWindowResize();
+
+				wireMaterial = new THREE.MeshBasicMaterial({
+					color: 0xCCCCCC,
+					transparent: true,
+					opacity: 0.5,
+					wireframe: true,
+					depthTest:false,
+					depthWrite: false,
+					wireframeLinewidth: 1
+				});
+
+				toggleItems();
+
+				//trace
+				var debug = document.createElement('div');
+				debug.id = 'debug';
+				document.body.appendChild(debug);
+
+
+				animate();
+
+			}
+
+
+			function toggleItems(){
+				//go thru check boxes
+				//show/hide items
+				items.forEach(function(item,i){
+					item.toggle(guiParams['item-size' + i] > 0);
+					//resizeItems
+					item.repulsionFac = guiParams['item-size' + i];
+
+				});
+				setTimeout(buildHull,500);
+			}
+
+			function buildHull(){
+
+				//create new convex hull
+				if (wireMesh !== undefined){
+					sceneHolder.remove(wireMesh);
+					//geometry.dispose();
+					//material.dispose();
+					//texture.dispose();
+				}
+
+				var points = [];
+				var showingItemCount = 0 ;
+				items.forEach(function(item){
+					if (item.isShowing) {
+						points.push(item.holder.position);
+						showingItemCount++;
+					}
+				});
+
+				convexGeometry = new THREE.ConvexGeometry(points);
+				wireMesh = new THREE.Mesh(convexGeometry, wireMaterial);
+				sceneHolder.add(wireMesh);
+
+				//center geometry in 3d space
+				//calc bounding sphere
+				//tween centroid to world origin
+				convexGeometry.computeBoundingSphere();
+				var bs = convexGeometry.boundingSphere;
+				TweenLite.to(sceneHolder.position,0.5,{x:-bs.center.x,y:-bs.center.y,z:-bs.center.z});
+
+			}
+
+			function onWindowResize() {
+
+				winW = window.innerWidth;
+				winH = window.innerHeight;
+				camera.aspect = winW / winH;
+				camera.updateProjectionMatrix();
+				renderer.setSize( winW, winH );
+
+			}
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+				renderer.render(scene, camera);
+				stats.update();
+				controls.update();
+				items.forEach(function(item){
+					item.update();
+				});
+				if (convexGeometry) convexGeometry.verticesNeedUpdate = true;
+			}
+
+			function trace(text){
+				document.getElementById('debug').innerHTML = text;
+			}
+
+			//////////////////////////////////////////////////////////////////////
+			//////////////////////////////////////////////////////////////////////
+
+			function Item(){
+
+				// item is an empty node - rendered via 2 divs
+				var hue;
+
+				var labelDiv;
+				var dotDiv;
+
+				var LABEL_WIDTH = 200;
+				var LABEL_HEIGHT = 30;
+
+				var force = new THREE.Vector3();
+				var vel = new THREE.Vector3();
+
+				var vec = new THREE.Vector3(); //working vec3
+				var offset = new THREE.Vector2();
+
+				var textWidth;
+
+				this.init = function(parentObj3D,id){
+
+					//PUBLIC API
+					this.id = id;
+					this.holder = new THREE.Object3D();
+					this.isShowing = false;
+					this.repulsionFac = 1;
+
+					parentObj3D.add( this.holder );
+					hue = this.id/MAX_ITEMS;
+
+					var col = new THREE.Color();
+					col.setHSL(hue, 0.9,0.5);
+
+					this.holder.position.copy(ATUtil.randomVector3(BOUNDS));
+
+					//start item roughly in a sphere to avoid starting inside the gem
+					this.holder.position.normalize();
+					this.holder.position.multiplyScalar( BOUNDS );
+
+					// HTML LABELS
+					//create label div
+					labelDiv = document.createElement('div');
+					labelDiv.id = 'labelDiv' + this.id;
+					document.body.appendChild(labelDiv);
+					labelDiv.classList.add('label');
+					labelDiv.textContent = itemWords[this.id];
+					TweenMax.set (labelDiv, {autoAlpha:  0 });
+
+					//create dot div
+					dotDiv = document.createElement('div');
+					dotDiv.id = 'dot' + this.id;
+					document.body.appendChild(dotDiv);
+					dotDiv.classList.add('dot');
+					TweenMax.set (dotDiv, {autoAlpha:  0 });
+
+					//measure text width
+					measureText.textContent = itemWords[this.id];
+					textWidth = measureText.clientWidth;
+					//console.log(textWidth);
+
+				};
+
+				this.toggle = function(show){
+
+					if (show === this.isShowing) return;
+
+					//show or hide this item
+					TweenMax.set (labelDiv, {autoAlpha: show ? 1 : 0 });
+					TweenMax.set (dotDiv, {autoAlpha: show ? 1 : 0 });
+					this.isShowing = show;
+
+				};
+
+				this.update = function(){
+
+					if (!this.isShowing) return;
+
+					// based on pseudocode from http://en.wikipedia.org/wiki/Force-based_algorithms_%28graph_drawing%29
+
+					var damping = 0.01;
+					var timeStep = 0.2;
+
+					force.copy(zero);
+
+					//copmpute forces
+					items.forEach(function(other) {
+						if(other.isShowing && this.id !== other.id  ) {
+							force.add(this.computeRepulsion(other));
+							force.add(this.computeAttraction(other));
+						}
+					},this);
+
+
+					vel = vel.add(force.multiplyScalar(timeStep)).multiplyScalar(damping);
+					this.holder.position.add(vel.multiplyScalar(timeStep));
+
+					//TODO - scale dots
+					//var size = this.repulsionFac * 40;
+
+					TweenMax.set(dotDiv,{scale:this.repulsionFac});
+
+					//set 2d coords of divs based on 3d world position
+					vec.setFromMatrixPosition( this.holder.matrixWorld );
+					vec.project(camera);
+
+					var percX = (vec.x + 1) / 2;
+					var percY = (-vec.y + 1) / 2;
+					var left = percX * winW;
+					var top = percY * winH;
+
+					TweenMax.set(dotDiv,{x:left + 'px',y: top + 'px'});
+
+					if (guiParams.shiftLabels){
+
+						//calc label offset
+						//project screenpos angle onto an ellipse
+						//factor in dot size and label text width
+						offset.set(vec.x , -vec.y);
+						var ang = offset.angle();
+						var vrad = 10 * this.repulsionFac + 20;
+						var hrad = 10 * this.repulsionFac + 20 + textWidth/2;
+						offset.x = Math.cos(ang) * hrad;
+						offset.y = Math.sin(ang) * vrad;
+
+					}else{
+						offset.set(0,- (10 * this.repulsionFac + 20));
+					}
+					TweenMax.set(labelDiv,{x:left  + offset.x + 'px',y: top + offset.y + 'px'});
+				};
+
+				this.computeRepulsion = function(other) {
+					var dist = this.holder.position.distanceTo(other.holder.position);
+					var f = 1000 / dist ;
+					vec.subVectors(this.holder.position,other.holder.position);
+					vec.multiplyScalar(f);
+					return vec;
+				};
+
+				this.computeAttraction = function(other) {
+					var k = 80;
+					var idealDistance = 800;
+					var dist = this.holder.position.distanceTo(other.holder.position);
+					var f = - k * (dist - idealDistance);
+					var c = f / dist;
+					vec.subVectors(this.holder.position,other.holder.position);
+					vec.multiplyScalar(c);
+					return vec;
+				};
+
+
+
+			}
+
+
+		</script>
+
+	</body>
+</html>

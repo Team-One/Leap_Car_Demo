@@ -1,0 +1,765 @@
+
+body {
+	background-color: #000;
+	margin: 10px;
+	color: #FFF;
+	font-family: 'Nobel', sans-serif;
+	font-smoothing: antialiased;
+	-webkit-font-smoothing: antialiased;
+	overflow-x: hidden;
+}
+
+html {
+	box-sizing: border-box;
+}
+
+*,*:before, *:after {
+	box-sizing: inherit;
+}
+
+@font-face { font-family: 'Nobel'; src: url('../res/fonts/nobel-regular.woff'); }
+@font-face { font-family: 'Nobel Book'; src: url('../res/fonts/nobel-book.woff'); }
+@font-face { font-family: 'Nobel Bold'; src: url('../res/fonts/nobel-bold.woff'); }
+
+
+#container-outer{
+}
+
+/* TOP */
+
+#top-menu{
+	width: 100%;
+	z-index: 99;
+}
+
+#video-header{
+	width: 100%;
+	height: 400px;
+	overflow: hidden;
+	position: relative;
+}
+
+.top-video {
+	width: 100%;
+	height: 400px;
+	object-fit: cover;
+	position:absolute;
+	opacity: 0;
+}
+
+#hero-overlay{
+	height: 400px;
+	width: 1200px;
+	position:relative;
+	left: 50%;
+	margin-left:-600px;
+}
+
+.hero-line{
+	font-family: 'Nobel';
+	font-size: 52px;
+	position:absolute;
+	z-index: 2;
+	text-align: center;
+	width:100%;
+	opacity: 0;
+	left:50%;
+	margin-left:-600px;
+	top: 40px;
+}
+
+#hero-logo{
+	width: 452px;
+	height: 160px;
+	position:absolute;
+	top: 200px;
+	left:50%;
+	margin-left:-226px;
+}
+
+#hero-cross{
+	width: 160px;
+	height: 160px;
+	background-image: url('../res/img/logo-cross.png');
+	position:absolute;
+	opacity: 0;
+}
+
+#hero-logo-text{
+	width: 292px;
+	height: 160px;
+	background-image: url('../res/img/logo-text.png');
+	position:absolute;
+	left: 160px;
+	opacity: 0;
+	transform: translate(90px,0);
+}
+
+#hero-text{
+	font-family: 'Nobel';
+	font-size: 52px;
+	line-height: 130%;
+	position:absolute;
+	z-index: 2;
+	width:1200px;
+	top: 40px;
+	text-align: center;
+	left:50%;
+	margin-left:-600px;
+}
+
+/* MAIN */
+
+#main-content{
+	max-width: 1300px;
+	margin: 0 auto;
+}
+.main-module{
+	position: relative;
+	height: 460px;
+	margin-top: 50px;
+}
+
+.main-text-holder{
+	position: absolute;
+	padding-top: 100px;
+	opacity:0;
+	z-index: 2;
+	height: 460px;
+	xborder: 1px solid red;
+}
+
+/* text module indiviual widths */
+#module-1-text{
+	width: 590px;
+}
+
+#module-2-text{
+	width: 580px;
+}
+
+#module-3-text{
+	width: 635px;
+}
+
+.main-image-holder{
+	width: 790px;
+	height: 460px;
+	position: absolute;
+	top: 0;
+}
+
+.main-text-holder.righty{
+	background: linear-gradient(to left,  rgba(0,0,0,0.6) 60%,rgba(0,0,0,0) 100%);
+	padding-left: 20px;
+}
+
+.main-text-holder.lefty{
+	background: linear-gradient(to right,  rgba(0,0,0,0.6) 60%,rgba(0,0,0,0) 100%);
+	padding-right: 20px;
+}
+
+.righty{
+	right: 50px;
+	transform-origin: right top;
+}
+
+.lefty{
+	left: 50px;
+	transform-origin: left top;
+}
+
+.main-image{
+	width: 734px;
+	height: 430px;
+	position:absolute;
+	top: 30px;
+	left: 30px;
+	opacity:0;
+}
+
+.main-image-frame{
+	width: 734px;
+	height: 430px;
+	background-image: url('../res/img/frame-tile.png');
+	position:absolute;
+	opacity: 0;
+}
+
+.main-heading{
+	font-family: 'Nobel';
+	font-size: 38px;
+	line-height: 100%;
+}
+
+.heading-top{
+	width: 0%;
+	height:6px;
+	background-color: #FFF;
+	margin-bottom: 6px;
+}
+
+.main-subheading{
+	font-family: 'Nobel';
+	font-size: 24px;
+	margin-top: 6px;
+}
+
+.main-body{
+	font-family: 'Palatino','Palatino Linotype','Book Antiqua',serif;
+	font-size: 18px;
+	margin-top:15px;
+	line-height: 140%;
+}
+
+#module-1-img{
+	cursor: pointer;
+}
+
+/* FOCUS */
+
+.stack-img{
+	position:absolute;
+	top:0;
+	width: 100%;
+	height: auto;
+}
+
+/* FAQ */
+#faq{
+	max-width: 1300px;
+	margin: 150px auto 0 auto;
+}
+
+#faq-header-label{
+	font-family: 'Nobel';
+	font-size: 24px;
+	letter-spacing: 4px;
+	position: absolute;
+	left: 0;
+}
+
+#faq-header{
+	height: 42px;
+	border-bottom: #999 dotted 1px;
+	position: relative;
+	margin: 0 20px;
+	cursor: pointer;
+	opacity: 0;
+}
+
+#faq-content{
+	display:none;
+}
+
+#faq-header-arrow{
+	width: 17px;
+	height: 11px;
+	position: absolute;
+	right: 0;
+	top: 10px;
+	background-image: url('../res/img/down-arrow.png');
+}
+
+.flipped {
+    transform: scale(-1);
+}
+
+.faq-q {
+	font-family: 'Nobel Bold';
+	font-size: 16px;
+	margin: 25px 20px 0 20px;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+
+.faq-a{
+	font-family: 'Palatino','Palatino Linotype','Book Antiqua',serif;
+	font-size: 18px;
+	line-height: 140%;
+	margin: 15px 20px 0 20px;
+}
+
+/* DEALER LIST */
+
+#dealers{
+	max-width: 1300px;
+	margin: 0 auto;
+	margin-top: 100px;
+}
+
+#dealers-top{
+	text-align: center;
+	opacity: 0;
+}
+
+#dealers-subheader{
+	width: 670px;
+	border-top: 2px solid #FFF;
+	margin: 16px auto 140px auto;
+	padding-top: 16px;
+}
+
+#dealer-list{
+	max-width: 1040px;
+	margin: 0 auto;
+}
+
+.dealer{
+	position: relative;
+	width: 510px;
+	height: 235px;
+	margin-top: -50px;
+	opacity: 0;
+}
+
+.dealer-lefty{
+	left: 0px;
+}
+
+.dealer-righty{
+	left: 530px;
+}
+
+.delear-img{
+	width: 285px;
+	height: 235px;
+}
+
+.dealer-details{
+	position: absolute;
+	left: 305px;
+	top:0;
+	height: 235px;
+	width: 205px;
+}
+
+.dealer-details a {
+	color: #FFF;
+	text-decoration: none;
+}
+
+.dealer-name{
+	font-family: 'Nobel Bold';
+	font-size: 16px;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	margin-bottom: 3px;
+}
+
+.dealer-address{
+	font-family: 'Palatino','Palatino Linotype','Book Antiqua',serif;
+	font-size: 13px;
+	line-height: 140%;
+	color: #6C6C6C;
+	margin-bottom: 4px;
+}
+
+.dealer-site{
+	font-family: 'Nobel Bold';
+	font-size: 11px;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	margin-bottom: 6px;
+}
+
+.dealer-contact{
+	font-family: 'Nobel Bold';
+	font-size: 11px;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	margin-bottom: 4px;
+}
+
+.dealer-preferred{
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	color: #BA955E;
+	position: absolute;
+	bottom: 60px;
+}
+
+.dealer-preferred a {
+	color: #BA955E;
+	text-decoration: none;
+}
+
+.dealer-detail-btn{
+	font-family: 'Nobel Bold';
+	font-size: 13px;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	color: #000;
+	background-color: #FFF;
+	width: 205px;
+	height: 50px;
+	line-height: 50px;
+	text-align: center;
+	position: absolute;
+	bottom: 0;
+	cursor: pointer;
+}
+
+/* MISC */
+
+#debug{
+	position: fixed;
+	top:0;
+	right:0;
+	font-size: 20px;
+	color: #0f0;
+	z-index: 999;
+	background-color: rgba(0,0,0,0.8);
+	width: 200px;
+	height: 20px;
+	display:none;
+}
+
+/* VIDEO OVERLAY */
+
+#video-overlay{
+
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	top:0;
+	left:0;
+	background-color: #000;
+	z-index: 999999;
+	visibility:hidden;
+}
+
+#video-close-btn {
+	width: 60px;
+	height: 60px;
+	background-image: url('../res/img/close-btn.png');
+	position:absolute;
+	top:0;
+	right: 0;
+	cursor: pointer;
+}
+
+#video-player{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top:0;
+	left:0;
+}
+
+.stop-scrolling {
+  height: 100%;
+  overflow: hidden;
+}
+
+
+/* BREAKPOINTS */
+
+
+/* TABLET ================================== */
+
+@media  (max-width: 960px)   {
+
+	body {
+		margin:0;
+	}
+
+	#video-header{
+		height: 320px;
+	}
+
+	#hero-overlay{
+		margin-top: -40px;
+	}
+
+	.hero-line{
+		width:670px;
+		margin-left:-335px;
+		top: 0px;
+	}
+
+	#hero-logo{
+		top: 240px;
+	}
+
+	.main-module{
+		height: 295px;
+		margin-top: 20px;
+	}
+
+	.righty{
+		right: 0px;
+	}
+
+	.lefty{
+		left: 0px;
+	}
+
+	.main-text-holder.righty{
+		right: 20px;
+	}
+
+	.main-text-holder.lefty{
+		left: 20px
+	}
+
+	.main-image-holder{
+		width: 590px;
+		height: 340px;
+	}
+
+	.main-image{
+		width: 570px;
+		height: 340px;
+		top: 10px;
+		left: 10px;
+	}
+
+	.main-image-frame{
+		width: 570px;
+		height: 340px;
+	}
+
+	.main-text-holder{
+		padding-top: 30px;
+		xheight: 265px;
+	}
+
+	#module-1-text{
+		width: 410px;
+	}
+
+	#module-2-text{
+		width: 410px;
+	}
+
+	#module-3-text{
+		width: 410px;
+	}
+
+	.main-heading{
+		font-size: 30px;
+	}
+
+	.main-subheading{
+		font-size: 24px;
+	}
+
+	.main-body{
+		font-size: 19px;
+	}
+
+	/* FAQ */
+	#faq{
+		margin: 50px auto 0 auto;
+	}
+
+	.faq-q {
+		font-size: 13px;
+		margin: 20px 20px 0 20px;
+	}
+
+	.faq-a{
+		font-size: 13px;
+		margin: 10px 20px 0 20px;
+	}
+
+
+	/* DEALERS */
+
+	#dealer-list{
+		width: 100%;
+	}
+
+	#dealers-subheader{
+		width: 100%;
+		margin: 16px auto 20px auto;
+	}
+
+	.dealer-dummy{
+		margin: 40px auto 0 auto;
+	}
+
+	.dealer{
+		margin: 40px auto 0 auto;
+	}
+
+	.dealer-righty{
+		left: 0;
+	}
+}
+
+/* PHONE ===================================*/
+
+@media  (max-width: 560px)   {
+
+	.main-module{
+		height: auto;
+	}
+
+	.main-text-holder{
+		padding-top: 20px;
+		height: auto;
+		width:100%;
+		position: relative;
+	}
+
+	.main-heading{
+		font-size: 22px;
+	}
+
+	.main-subheading{
+		font-size: 16px;
+	}
+
+	.main-body{
+		font-size: 12px;
+	}
+
+	.main-image-holder{
+		width: 100%;
+		position: relative;
+	}
+
+	.main-image{
+		width: 100%;
+		height: auto;
+		top: 0px;
+		left: 0px;
+	}
+
+	.main-text-holder.righty{
+		padding-left: 0;
+	}
+
+	.main-text-holder.lefty{
+		padding-right: 0;
+	}
+
+	.main-image-frame{
+		width: 100%;
+		height: auto;
+	}
+
+	.stack-img{
+		width: 100%;
+		height: auto;
+	}
+
+	#module-1-text{
+		width: 100%;
+	}
+
+	#module-2-text{
+		width: 100%;
+	}
+
+	#module-3-text{
+		width: 100%;
+	}
+
+	.righty{
+		left: 0;
+	}
+
+	.lefty{
+		left: 0;
+	}
+
+	.main-text-holder.righty{
+		right: 0;
+	}
+
+	.main-text-holder.lefty{
+		left: 0
+	}
+
+	/* DEALER */
+
+	.dealer{
+		width: 285px;
+		height: auto;
+		text-align: center;
+		margin-bottom: 80px;
+	}
+
+	.delear-img{
+		width: 285px;
+		height: 235px;
+	}
+
+	.dealer-details{
+		xborder: solid green 1px;
+		position: static;
+		width: 285px;
+		height: auto;
+	}
+
+	.dealer-name{
+		font-size: 14px;
+		margin-bottom: 8px;
+	}
+
+	.dealer-address{
+		color: #FFF;
+		margin-bottom: 8px;
+	}
+
+	.dealer-site{
+		font-family: 'Nobel Bold';
+		font-size: 11px;
+		color: #FFF;
+		background-color: #000;
+		border: 1px solid #FFF;
+		width: 110px;
+		height: 30px;
+		line-height: 30px;
+		text-align: center;
+		cursor: pointer;
+		float: left;
+	}
+
+	.dealer-contact{
+		display:none;
+	}
+
+	.dealer-preferred{
+		display:none;
+	}
+
+	.dealer-detail-btn{
+		font-family: 'Nobel Bold';
+		font-size: 11px;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+		color: #000;
+		background-color: #FFF;
+		width: 110px;
+		height: 30px;
+		line-height: 30px;
+		float: right;
+		position: static;
+	}
+
+}
+
+/* SYNC BREAKPOINTS WITH JS */
+#container-outer:after {
+	content: 'desktop';
+	display: none;
+}
+
+
+@media (max-width: 960px) {
+	#container-outer:after {
+		content: 'tablet';
+	}
+}
+
+@media (max-width: 560px) {
+	#container-outer:after {
+		content: 'phone';
+	}
+}

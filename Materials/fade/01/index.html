@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>fade test</title>
+
+
+	<style type="text/css">
+
+	#img-fader{
+
+		width: 734px;
+		height: 341px;
+		position:relative;
+
+	}
+
+	#img-fade-2 {
+		opacity: 1;
+		z-index: 2;
+
+	}
+
+	
+
+	.img-fade{
+		position:absolute;
+		top:0;
+
+	}
+
+				</style>
+</head>
+<body>
+
+
+<div id="img-fader">
+		<img id="img-fade-1" class="img-fade" src="../res/img/01.jpg">
+		<!-- <img id="img-fade-2" src="res/img/02.jpg"> -->
+		<img id="img-fade-2" class="img-fade" src="../res/img/03.jpg">
+</div>
+
+<script src="../lib/jquery-2.2.1.min.js"></script>
+
+
+<script type="text/javascript">
+
+
+var $img1, img2;
+var fadeTime = 0;
+
+function init(){
+
+	$img1 = $('#img-fade-1')
+	$img2 = $('#img-fade-2')
+
+
+
+
+	update();
+}
+
+function update(){
+
+	requestAnimationFrame( update );
+
+
+	$img2.css('opacity', Math.abs(Math.sin(fadeTime)));
+
+	//console.log(fadeTime % 1);
+
+	fadeTime += 0.01;
+
+
+
+
+
+
+}
+
+init();
+
+
+</script>
+
+</body>
+</html>

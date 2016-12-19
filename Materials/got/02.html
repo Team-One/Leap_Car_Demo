@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>SPARKS</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				margin: 0px;
+				background-color: #000000;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+	<body>
+
+		<script src="../lib/three.min.js"></script>
+		<script src="../lib/stats.min.js"></script>
+		<script src="../lib/OrbitControls.js"></script>
+		<script src="../lib/SimplexNoise.js"></script>
+		<script src="../lib/atutil.js"></script>
+		<script src="../lib/dat.gui.min.js"></script>
+		<script src="../lib/OBJLoader.js"></script>
+
+		<script>
+
+			/* global THREE, Stats, SimplexNoise, ATUtil, dat */
+
+			/*
+				GOT sparks???
+			*/
+
+			var camera, scene, renderer;
+			var stats;
+			var controls;
+			var trailCount = 30;
+			var trails = [];
+			var sceneHolder ;
+			var noise = new SimplexNoise();
+			var BOUNDS = 500; //world box from -BOUNDS to +BOUNDS
+
+			var XBOUND = 1500;
+			var YBOUND = 1000;
+			var ZBOUND = 1000;
+
+			//var renderTime = 0;
+			var glowMap;
+
+			var skyMat;
+
+			var guiParams = {
+
+				// noiseSpeed: 0.001,
+				// noiseScale: 1200,
+				// noiseSeparation:0.02,
+				// emitterSpeed:1,
+				// windSpeed: 1,
+
+				//fishy
+				noiseScale: 660,
+				noiseSpeed: 0.006,
+				noiseSeparation:0.0005,
+				emitterSpeed:4,
+				windSpeed: 4,
+			};
+
+			init();
+
+			function init() {
+
+				//INIT DAT GUI
+				var gui = new dat.GUI();
+				gui.add(guiParams, 'noiseScale', 10, 5000);
+				gui.add(guiParams, 'noiseSpeed', 0, 0.05);
+				gui.add(guiParams, 'noiseSeparation', 0, 0.01);
+				gui.add(guiParams, 'emitterSpeed', 0.01, 10);
+				gui.add(guiParams, 'windSpeed', 0, 10);
+
+				renderer = new THREE.WebGLRenderer({
+					//preserveDrawingBuffer: true,
+					//clearAlpha: 1,
+					//alpha:false
+				});
+				//renderer.autoClear = false;
+
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				document.body.appendChild( renderer.domElement );
+
+				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
+				camera.position.z = 1300;
+				scene = new THREE.Scene();
+
+				scene.fog = new THREE.Fog( 0x000000, 1300, 1500 + 1000 );
+
+
+				sceneHolder = new THREE.Object3D();
+				scene.add( sceneHolder );
+
+				//controls
+				controls = new THREE.OrbitControls( camera, renderer.domElement );
+				//controls.autoRotate = true;
+
+				//load texture
+				var textureLoader = new THREE.TextureLoader();
+				//glowMap = textureLoader.load( 'res/particle.png');
+
+
+				textureLoader.load(
+					'res/particle.png',
+					function ( texture ) {
+						glowMap = texture;
+						init2();
+					}
+				);
+
+
+				//background
+				var skyMap = textureLoader.load( 'res/lexus04.jpg');
+				skyMat = new THREE.MeshBasicMaterial({
+					map: skyMap,
+					blending: THREE.AdditiveBlending,
+					depthTest: false,
+					transparent : true,
+					opacity: 1,
+					side:THREE.DoubleSide
+				});
+				var skyGeom = new THREE.PlaneGeometry(500 * 2.5,339 * 2.5, 1,1);
+				var sky = new THREE.Mesh(skyGeom, skyMat);
+				scene.add(sky);
+
+
+
+
+				//background
+				var skyMap2 = textureLoader.load( 'res/glow.jpg');
+				skyMat2 = new THREE.MeshBasicMaterial({
+					map: skyMap2,
+					blending: THREE.AdditiveBlending,
+					depthTest: false,
+					transparent : true,
+					opacity: 1,
+					side:THREE.DoubleSide
+				});
+				var skyGeom2 = new THREE.PlaneGeometry(1024 * 3,768 * 3, 1,1);
+				var sky2 = new THREE.Mesh(skyGeom2, skyMat2);
+				scene.add(sky2);
+
+				//LIGHTS
+				// var directionalLight = new THREE.DirectionalLight( 0xffeedd );
+				// directionalLight.position.set( 0, 0, 1 );
+				// scene.add( directionalLight );
+
+				// var light = new THREE.AmbientLight( 0x404040 ); // soft white light
+				// scene.add( light );
+
+				// var hemiLight = new THREE.HemisphereLight( 0x000000 );
+				// hemiLight.position.set( 0, 100, 0 );
+				// scene.add( hemiLight );
+
+				// var lights = [];
+				// lights[ 0 ] = new THREE.SpotLight( 0xffffff, 1, 0 );
+
+				// lights[ 1 ] = new THREE.PointLight( 0xffffff, 1, 0 );
+				// lights[ 2 ] = new THREE.PointLight( 0xffffff, 1, 0 );
+
+				// lights[ 0 ].position.set( -300, 110, 300 );
+
+				// lights[ 1 ].position.set( 700, 1500, 700 );
+				// lights[ 2 ].position.set( - 700, - 1500, - 700 );
+
+				// scene.add( lights[ 0 ] );
+				// scene.add( lights[ 1 ] );
+				// scene.add( lights[ 2 ] );
+
+				//LOGO TEXTURES
+				// var normalMap = textureLoader.load( 'res/normal.jpg');
+				// var map = textureLoader.load( 'res/gold.jpg');
+				// var textureScl = 30;
+				// normalMap.wrapS = normalMap.wrapT = THREE.RepeatWrapping;
+				// normalMap.repeat.set( textureScl, textureScl);
+				// //normalMap.offset.set( 0.1, 0.5 );
+
+				// map.wrapS = map.wrapT = THREE.RepeatWrapping;
+				// map.repeat.set(textureScl,  textureScl );
+
+				// //LOAD LOGO OBJ
+				// var loader = new THREE.OBJLoader();
+				// loader.load( 'obj/logo4.obj', function ( object ) {
+				// 	object.traverse( function ( child ) {
+				// 		if ( child instanceof THREE.Mesh ) {
+				// 			console.log(child);
+				// 			child.material = new THREE.MeshStandardMaterial({
+				// 				roughness: 0.5,
+				// 				metalness: 0.5,
+				// 				map: map,
+				// 				normalMap: normalMap,
+				// 				side:THREE.DoubleSide,
+				// 				//color: 0xFF00FF,
+				// 				roughnessMap: map,
+				// 				//wireframe: true
+				// 			});
+				// 		}
+				// 	} );
+
+				// 	object.scale.set(5,5,5);
+				// 	scene.add( object );
+
+
+				// 	console.log('hello');
+				// } );
+
+			}
+
+
+
+			function init2(){
+
+				//box
+				// var boxMat = new THREE.MeshBasicMaterial({
+				// 	wireframe: true,
+				// 	color: 0x990000,
+				// 	blending: THREE.AdditiveBlending,
+				// 	depthTest: false,
+				// 	transparent : true,
+				// 	opacity: 0.5
+				// });
+				// var boxGeom = new THREE.BoxGeometry(XBOUND*2,YBOUND*2,ZBOUND*2, 1,1,1);
+				// var box = new THREE.Mesh(boxGeom, boxMat);
+				// sceneHolder.add(box);
+
+				//init trails
+				for (var i = 0; i < trailCount; i++) {
+					var trail = new Trail();
+					trail.init(sceneHolder,i);
+					trails.push(trail);
+				}
+
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				stats.domElement.style.zIndex = 100;
+				document.body.appendChild( stats.domElement );
+
+				window.addEventListener( 'resize', onWindowResize, false );
+
+
+				//trace
+				var debug = document.createElement('div');
+				debug.id = 'debug';
+				document.body.appendChild(debug);
+				debug.style.zIndex = 999;
+				debug.style.color = '#00FF00';
+				debug.style.position = 'absolute';
+				debug.style.bottom = '10px';
+				debug.style.fontFamily = 'sans-serif';
+				debug.textContent = 'debug';
+
+				animate();
+
+			}
+
+			function onWindowResize() {
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+			}
+
+			function animate() {
+
+				//renderTime += guiParams.noiseSpeed;
+
+				requestAnimationFrame( animate );
+				renderer.render(scene, camera);
+				stats.update();
+				controls.update();
+
+				for (var i = 0; i < trailCount; i++) {
+					trails[i].update();
+				}
+
+
+				skyMat.opacity = ATUtil.randomRange(0.7,1);
+
+			}
+
+			function trace(text){
+				document.getElementById('debug').innerHTML = text;
+			}
+
+			///////////////////////////////////////////////////
+
+			function Trail(){
+
+				var emitter;
+				var velocity = new THREE.Vector3();
+				var vec = new THREE.Vector3();
+				var pointsGeometry;
+				var pointCount = 3;
+				var curPointIndex = 0;
+				var renderTime = 0;
+				var hue;
+
+				this.init = function(parentObj3D,id){
+
+					this.id = id;//Math.random();
+					this.holder = new THREE.Object3D();
+
+					//emitter
+					var materialSp = new THREE.SpriteMaterial( {
+						map: glowMap,
+						blending: THREE.AdditiveBlending,
+						depthTest: false,
+						transparent : true,
+						opacity:0.6
+					} );
+					//emitter = new THREE.Sprite(materialSp);
+					emitter = new THREE.Object3D();
+					emitter.scale.set( 80, 80, 80 );
+					this.holder.add(emitter);
+
+					emitter.position.copy(ATUtil.randomVector3(BOUNDS));
+
+					parentObj3D.add( this.holder );
+
+					hue = 0.1;//Math.random();
+
+					//trail points
+					pointsGeometry = new THREE.Geometry();
+
+					pointsGeometry.colors = [];
+					var trailMaterial = new THREE.PointsMaterial( {
+						size: 10 + 30 * Math.random(),
+						map: glowMap,
+						blending: THREE.AdditiveBlending,
+						depthTest: false,
+						transparent : true,
+						color:0xFFFFFF,
+						opacity:0.5,
+						vertexColors: THREE.VertexColors
+					} );
+
+					for ( var i = 0; i < pointCount; i ++ ) {
+						var vertex = new THREE.Vector3();
+						pointsGeometry.vertices.push( vertex );
+						pointsGeometry.colors.push(new THREE.Color());
+					}
+
+					var points = new THREE.Points( pointsGeometry, trailMaterial );
+					this.holder.add(points);
+
+					this.reset();
+
+					emitter.position.y = ATUtil.randomRange(-YBOUND,YBOUND);
+
+				};
+
+				this.reset = function(){
+					//emitter.position.copy(ATUtil.randomVector3(BOUNDS));
+					emitter.position.y = -YBOUND + 10;
+					emitter.position.x = ATUtil.randomRange(-XBOUND,XBOUND);
+					emitter.position.z = ATUtil.randomRange(-ZBOUND,ZBOUND);
+				};
+
+
+				this.update = function(){
+
+					renderTime += guiParams.noiseSpeed;
+
+					//MOVE EMITTER
+					vec.copy(emitter.position).divideScalar(guiParams.noiseScale);
+
+					//noise sets 3d velocity
+					//velocity.x = noise.noise4d(vec.x,vec.y,vec.z, renderTime + this.id*guiParams.noiseSeparation) * guiParams.emitterSpeed;
+					//velocity.y = noise.noise4d(vec.x,vec.y,vec.z, renderTime + 50   + this.id*guiParams.noiseSeparation) * guiParams.emitterSpeed;
+					//velocity.z = noise.noise4d(vec.x,vec.y,vec.z, renderTime + 100  + this.id*guiParams.noiseSeparation) * guiParams.emitterSpeed;
+
+					//velocity.x = noise.noise3d(vec.x,vec.y, renderTime + this.id*guiParams.noiseSeparation) * guiParams.emitterSpeed;
+					//velocity.y = noise.noise3d(vec.x,vec.y, renderTime + 50   + this.id*guiParams.noiseSeparation) * guiParams.emitterSpeed;
+					//velocity.z = noise.noise3d(vec.z,vec.y, renderTime + 100  + this.id*guiParams.noiseSeparation) * guiParams.emitterSpeed;
+
+					velocity.x = noise.noise(vec.y, renderTime ) * guiParams.emitterSpeed;
+					velocity.y = noise.noise(vec.z, renderTime ) * guiParams.emitterSpeed;
+					velocity.z = noise.noise(vec.x, renderTime) * guiParams.emitterSpeed;
+
+					emitter.position.add(velocity);
+					emitter.position.y += guiParams.windSpeed;
+
+					if (emitter.position.x > XBOUND || emitter.position.x < -XBOUND ||
+						emitter.position.y > YBOUND || emitter.position.y < -YBOUND ||
+						emitter.position.z > ZBOUND || emitter.position.z < -ZBOUND ) {
+						this.reset();
+					}
+
+
+					//follow emitter w trail
+					curPointIndex ++;
+					curPointIndex  = curPointIndex % pointCount;
+					pointsGeometry.vertices[curPointIndex].copy(emitter.position);
+					pointsGeometry.verticesNeedUpdate = true;
+
+					//fade out brightness
+
+					//hue on Y
+					//var hue = Math.abs(emitter.position.y/BOUNDS);
+					// for (var i = 0; i < pointCount; i ++ ) {
+					// 	pointsGeometry.colors[i].setHSL(hue, 0.9, mod(1 - (( curPointIndex - i)/ pointCount),1)*0.8);
+					// }
+					// pointsGeometry.colorsNeedUpdate = true;
+
+
+
+
+
+				};
+
+			}
+
+			function mod(n, m) {
+				return ((n % m) + m) % m;
+			}
+
+		</script>
+
+	</body>
+</html>

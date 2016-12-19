@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+
+
+<script type="text/javascript">
+
+
+		var obj = new MyObj();
+
+		update();
+
+
+		function update(){
+			requestAnimationFrame(update);
+			obj.update();
+		}
+
+
+		function MyObj(){
+
+			this.publicVar = 20;
+			var privateVar = 10;
+
+			this.update = function(){
+				privateVar += 0.2;
+				console.log(privateVar);
+			};
+
+		}
+
+
+
+</script>
+
+</body>
+</html>

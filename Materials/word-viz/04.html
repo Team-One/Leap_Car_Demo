@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>LEXUS THEME VIZ</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link href='https://fonts.googleapis.com/css?family=Roboto:400' rel='stylesheet' type='text/css'>
+		<style>
+			body {
+				margin: 0px;
+				background-color: #000000;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+	<body>
+
+		<script src="../lib/three.min.js"></script>
+		<script src="../lib/stats.min.js"></script>
+		<script src="../lib/OrbitControls.js"></script>
+		<script src="../lib/SimplexNoise.js"></script>
+		<script src="../lib/ImprovedNoise.js"></script>
+		<script src="../lib/ConvexGeometry.js"></script>
+		<script src="../lib/atutil.js"></script>
+		<script src="../lib/dat.gui.min.js"></script>
+
+		<script>
+
+			/* global THREE, Stats, ATUtil, dat */
+
+			/*
+				toggle 4- 15 words to show as Platonic solids
+				words are sides or nodes?
+				add/remove sides easily
+				use megnetic attraction/replusion to form sheres of nodes
+				join with lines
+			*/
+
+			var camera, scene, renderer;
+			var stats;
+			var controls;
+
+			var showingItemCount = 3;
+			var items = [];
+			var sceneHolder ;
+
+			var BOUNDS = 500;
+			var MAX_ITEMS = 20;
+
+			//var renderTime = 0;
+
+			var guiParams = {};
+
+			var nodeImg;
+
+			var textureLoader;
+
+			var convexMesh;
+			var convexGeometry;
+
+
+			var zero = new THREE.Vector3();
+
+			var itemWords = ['luxury', 'design', 'reliability','affluence','comfort','enjoyment','extravagance','leisure','opulence','richness','arrangement','composition','drawing','form','idea','accuracy','authenticity','honesty','loyalty','safety','security',];
+
+			init();
+			animate();
+
+			function init() {
+
+				//INIT DAT GUI
+				var gui = new dat.GUI();
+
+				renderer = new THREE.WebGLRenderer();
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				document.body.appendChild( renderer.domElement );
+
+				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
+				camera.position.z = 1300;
+				scene = new THREE.Scene();
+
+				sceneHolder = new THREE.Object3D();
+				scene.add( sceneHolder );
+
+				//controls
+				controls = new THREE.OrbitControls( camera, renderer.domElement );
+				controls.autoRotate = true;
+
+				//box
+				// var boxMat = new THREE.MeshBasicMaterial({
+				// 	wireframe: true,
+				// 	color: 0x990000,
+				// 	blending: THREE.AdditiveBlending,
+				// 	depthTest: false,
+				// 	transparent : true,
+				// 	opacity: 0.5
+				// });
+				// var boxGeom = new THREE.BoxGeometry(1000,1000,1000, 2,2,2);
+				// var box = new THREE.Mesh(boxGeom, boxMat);
+				// sceneHolder.add(box);
+
+				//load texture
+				textureLoader = new THREE.TextureLoader();
+				nodeImg = textureLoader.load( 'res/particle.png');
+
+				//init items
+				for (var i = 0; i < MAX_ITEMS; i++) {
+
+					var showing = i < showingItemCount;
+					guiParams['item' + i] = showing;
+					gui.add(guiParams, 'item' + i).onChange(toggleItems);
+
+					var item = new Item();
+					item.init(sceneHolder,i,showing);
+					items.push(item);
+
+				}
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				stats.domElement.style.zIndex = 100;
+				document.body.appendChild( stats.domElement );
+
+				window.addEventListener( 'resize', onWindowResize, false );
+
+				toggleItems();
+
+			}
+
+			function toggleItems(){
+
+				//go thru check boxes
+
+				//show/hide items
+				items.forEach(function(item,i){
+					item.toggle(guiParams['item' + i]);
+				});
+
+
+				//create new convex hull
+
+				if (convexMesh !== undefined){
+					sceneHolder.remove(convexMesh);
+				}
+
+				var material = new THREE.MeshBasicMaterial({
+				    color: 0xff00000,
+				    transparent: true,
+				    opacity: 0.8,
+				    wireframe: true
+				});
+
+				var points = [];
+				items.forEach(function(item){
+					if (item.isShowing) points.push(item.holder.position);
+				});
+
+				convexGeometry = new THREE.ConvexGeometry(points);
+				convexMesh = new THREE.Mesh(convexGeometry, material);
+				sceneHolder.add(convexMesh);
+
+
+			}
+
+			function onWindowResize() {
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+			}
+
+			function animate() {
+
+				//renderTime += 0.01;
+
+				requestAnimationFrame( animate );
+				renderer.render(scene, camera);
+				stats.update();
+				controls.update();
+
+				//sceneHolder.rotation.x +=0.002;
+				//sceneHolder.rotation.y +=0.002;
+
+				//console.log('-------------------');
+
+				items.forEach(function(item){
+					item.update();
+				});
+
+				convexGeometry.verticesNeedUpdate = true;
+
+			}
+
+			function Item(){
+
+				// item is a sprite and a label
+
+
+				var hue;
+				var node;
+				var label;
+
+				var LABEL_WIDTH = 600;
+				var LABEL_HEIGHT = 50;
+
+				var force = new THREE.Vector3();
+				var vel = new THREE.Vector3();
+
+				var scope = this;
+
+				this.init = function(parentObj3D,id,show){
+
+					//PUBLIC API
+					this.id = id;
+					this.holder = new THREE.Object3D();
+					this.isShowing = false;
+
+					parentObj3D.add( this.holder );
+					hue = this.id/MAX_ITEMS;
+
+					var col = new THREE.Color();
+					col.setHSL(hue, 0.9,0.5);
+
+					//node
+					var materialSp = new THREE.SpriteMaterial( {
+						map: nodeImg,
+						color: col.getHex(),
+						blending: THREE.AdditiveBlending,
+						depthTest: false,
+						transparent : true,
+						opacity:0.8
+					} );
+
+					node = new THREE.Sprite(materialSp);
+					node.scale.set( 300, 300, 300 );
+					this.holder.add(node);
+
+					this.holder.position.copy(ATUtil.randomVector3(BOUNDS));
+					node.visible = false;
+
+					//LABEL
+
+					//write label text on canvas and use as material
+					var canvas = document.createElement('canvas');
+					canvas.width  = LABEL_WIDTH;
+					canvas.height = LABEL_HEIGHT;
+					var ctx = canvas.getContext('2d');
+					var labelTexture = new THREE.Texture(canvas);
+
+					//debug background
+					//ctx.fillStyle = '#FF00FF';
+					//ctx.fillRect(0,0,LABEL_WIDTH,LABEL_HEIGHT);
+
+					//draw text
+					ctx.textBaseline = 'top';
+					ctx.fillStyle = '#FFFFFF';
+					//ctx.font = '400 30px Roboto';
+					ctx.font = '40px sans-serif';
+					//ctx.fillText( this.id + ': ' + itemWords[this.id], 0, 0);
+					ctx.fillText( itemWords[this.id], 350, 0);
+
+
+					//var labelGeom = new THREE.PlaneGeometry( LABEL_WIDTH,LABEL_HEIGHT, 1, 1);
+					var labelMaterial = new THREE.SpriteMaterial( {
+						map: labelTexture,
+						transparent: true,
+						depthTest:false,
+						depthWrite: false,
+						blending: THREE.AdditiveBlending,
+						opacity:0.8
+					} );
+
+					label = new THREE.Sprite(labelMaterial);
+					label.scale.set( LABEL_WIDTH, LABEL_HEIGHT, 1 );
+					this.holder.add(label);
+					//label.position.x = LABEL_WIDTH/2 + 75;
+
+
+					//labelTexture.offset.set( -0.5, -0.5 );
+
+					label.visible = show;
+					labelTexture.needsUpdate = true;
+
+					this.toggle(show);
+
+				};
+
+
+				this.toggle = function(show){
+
+					if (show === this.isShowing) return;
+
+					//show or hide this item
+					node.visible = show;
+					label.visible = show;
+
+					this.isShowing = show;
+
+
+				};
+
+				this.update = function(){
+
+					if (!this.isShowing) return;
+
+
+					//console.log(this.id);
+
+					//console.log('HELLO');
+
+					// based on pseudocode from http://en.wikipedia.org/wiki/Force-based_algorithms_%28graph_drawing%29
+
+					var damping = 0.01;
+					var timeStep = 0.2;
+
+					force.copy(zero);
+
+					//attraction
+					items.forEach(function(other) {
+
+
+						if(other.isShowing && this.id !== other.id  ) {
+
+							//console.log(this.id, other.id);
+							force.add(this.computeRepulsion(other));
+							force.add(this.computeAttraction(other));
+						}
+					},this);
+
+
+					vel = vel.add(force.multiplyScalar(timeStep)).multiplyScalar(damping);
+
+					//vx = (vx + timestep * fx) * damping;
+					//vy = (vy + timestep * fy) * damping;
+
+					this.holder.position.add(vel.multiplyScalar(timeStep));
+
+					//x = x + timestep * vx;
+					//y = y + timestep * vy;
+
+				};
+
+				this.computeRepulsion = function(other) {
+					var dist = this.holder.position.distanceTo(other.holder.position);
+
+					//console.log(dist);
+
+
+					var f = 1000 / dist;
+					var vec = new THREE.Vector3();
+					vec.subVectors(this.holder.position,other.holder.position);
+					vec.multiplyScalar(f);
+
+					//console.log('repl',vec);
+					return vec;
+
+				};
+
+				this.computeAttraction = function(other) {
+					var k = 80;
+					var idealDistance = 800;
+					var dist = this.holder.position.distanceTo(other.holder.position);
+					var f = - k * (dist - idealDistance);
+					var c = f / dist;
+
+					var vec = new THREE.Vector3();
+					vec.subVectors(this.holder.position,other.holder.position);
+					vec.multiplyScalar(c);
+
+					//console.log('attr',vec);
+					return vec;
+				};
+
+
+
+			}
+
+
+		</script>
+
+	</body>
+</html>

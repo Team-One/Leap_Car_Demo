@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html class="html5" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1" >
+<title>Leap Motion Hologram Test</title>
+
+
+<style type="text/css">
+
+	body{
+		margin: 0px;
+		padding: 0px;
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+	}
+
+	#trace{
+		z-index:999;
+		color : #00FF00;
+		position: absolute;
+		bottom: 10px;
+		font-family: sans-serif;
+		top:50px;
+		font-size: 16px;
+	}
+
+</style>
+
+</head>
+<body >
+
+	<div id="trace"></div>
+
+
+	<div id="main">
+	<div id="webgl-scene" class="viewport"></div>
+	</div>
+
+	<script src="js/lib/three.min.js"></script>
+	<script src="js/lib/modifiers/SubdivisionModifier.js"></script>
+	<script src="js/lib/loaders/MTLLoader.js"></script>
+	<script src="js/lib/loaders/DDSLoader.js"></script>
+	<script src="js/lib/loaders/OBJMTLLoader.js"></script>
+	<script src="js/lib/jquery-1.11.1.min.js"></script>
+	<script src="js/lib/TweenMax.min.js"></script>
+
+	<script src='js/lib/atutil.js'></script>
+	<script src='js/lib/stats.min.js'></script>
+	<script src='js/lib/leap-0.6.4.min.js'></script>
+	<script src="js/lib/dat.gui.min.js"></script>
+
+	<script type="text/javascript" src="js/rx-scene.js" charset="utf-8"></script>
+	<script type="text/javascript" src="js/leap.js" charset="utf-8"></script>
+
+</body>
+</html>
+

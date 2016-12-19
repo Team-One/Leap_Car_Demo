@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PNG SEQUENCE TEST</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<style type="text/css">
+
+
+
+		.logo-anim {
+			width: 483px;
+			height: 200px;
+			background-image: url(logo-anim.png);
+			background-repeat: no-repeat;
+
+			-webkit-animation: play 1s steps(23) 1;
+					animation: play 1s steps(23) 1;
+
+			-webkit-animation-fill-mode: forwards;
+					animation-fill-mode: forwards;
+		}
+
+		@-webkit-keyframes play {
+		   from { background-position:    0px; }
+			 to { background-position: -11109px; }
+		}
+
+		@keyframes play {
+		   from { background-position:    0px; }
+			 to { background-position: -11109px; }
+		}
+
+
+	</style>
+</head>
+<body>
+
+	<div class="logo-anim"></div>
+
+</body>
+</html>

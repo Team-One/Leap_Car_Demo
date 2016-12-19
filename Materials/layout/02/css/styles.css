@@ -1,0 +1,332 @@
+
+body {
+	background-color: #000;
+	margin: 10px;
+	color: #FFF;
+	font-family: 'Nobel', sans-serif;
+	xfont-weight: 100;
+	font-smoothing: antialiased;
+	-webkit-font-smoothing: antialiased;
+	overflow-x: hidden;
+}
+
+html {
+	box-sizing: border-box;
+}
+
+*,*:before, *:after {
+	box-sizing: inherit;
+}
+
+@font-face { font-family: 'Nobel'; src: url('../../res/fonts/nobel-regular.woff'); }
+@font-face { font-family: 'Nobel Book'; src: url('../../res/fonts/nobel-book.woff'); }
+@font-face { font-family: 'Nobel Bold'; src: url('../../res/fonts/nobel-bold.woff'); }
+
+
+#container-outer{
+	xwidth: 100%;
+}
+
+/* TOP */
+
+#top-menu{
+	width: 100%;
+	xheight: 90px;
+	xbackground-color: #FFF;
+	xborder: red solid 1px;
+	xz-index: 99;
+}
+
+#video-header{
+	width: 100%;
+	height: 400px;
+	overflow: hidden;
+	position: relative;
+}
+
+.top-video {
+	width: 100%;
+	height: 400px;
+	object-fit: cover;
+	position:absolute;
+	opacity: 0;
+}
+
+#hero-text{
+	position:absolute;
+	z-index: 2;
+	xborder: 1px solid red;
+}
+
+.hero-line{
+	font-family: 'Nobel';
+	font-size: 52px;
+	position:absolute;
+	z-index: 2;
+	text-align: center;
+	width:1200px;
+	opacity: 0;
+	xtransform: rotate(90deg);
+	xtransform: rotateX(45deg);
+	left:50%;
+	margin-left:-600px;
+
+}
+
+#hero-line-1{
+	top: 40px;
+}
+
+#hero-line-2{
+	top: 110px;
+}
+
+#hero-logo{
+	width: 452px;
+	height: 160px;
+	position:absolute;
+	top: 200px;
+	left:50%;
+	margin-left:-226px;
+}
+
+#hero-cross{
+	width: 160px;
+	height: 160px;
+	background-image: url('../../res/img/logo-cross.png');
+	position:absolute;
+	opacity: 0;
+	xtransform: rotate(90deg);
+	xtransform: scale(0.6,0.6);
+}
+
+#hero-logo-text{
+	width: 292px;
+	height: 160px;
+	background-image: url('../../res/img/logo-text.png');
+	position:absolute;
+	left: 160px;
+	opacity: 0;
+	transform: translate(90px,0);
+}
+
+#hero-text{
+	font-family: 'Nobel';
+	font-size: 52px;
+	line-height: 130%;
+	position:absolute;
+	z-index: 2;
+	width:1200px;
+	top: 40px;
+	text-align: center;
+	left:50%;
+	margin-left:-600px;
+	xopacity: 0;
+}
+
+/* MAIN */
+
+#main-content{
+	max-width: 1300px;
+	xborder: yellow solid 1px;
+	margin: 0 auto;
+}
+.main-module{
+	position: relative;
+	xborder: 1px solid green;
+	height: 500px;
+	margin-top: 50px;
+}
+
+.main-text-holder{
+	position: absolute;
+	top: 100px;
+	xborder: 1px solid red;
+	opacity:0;
+}
+
+/* text module indiviual widths */
+#module-1-text{
+	width: 570px;
+}
+
+#module-2-text{
+	width: 560px;
+}
+
+#module-3-text{
+	width: 615px;
+}
+
+.main-image-holder{
+	width: 790px;
+	height: 490px;
+	xborder: 1px solid orange;
+	position: absolute;
+	top: 0;
+	opacity:0;
+}
+
+.righty{
+	right: 0;
+}
+
+.lefty{
+	left:0;
+}
+
+.main-image{
+	width: 734px;
+	height: 430px;
+	position:absolute;
+	top: 30px;
+	left: 30px;
+}
+
+.main-image-frame{
+	width: 730px;
+	height: 430px;
+	background-image: url('../../res/img/frame-tile.png');
+	position:absolute;
+}
+
+.main-heading{
+	font-family: 'Nobel';
+	font-size: 38px;
+	line-height: 100%;
+}
+
+.heading-top{
+	width: 0%;
+	height:6px;
+	background-color: #FFF;
+	margin-bottom: 6px;
+}
+
+.main-subheading{
+	font-family: 'Nobel';
+	font-size: 24px;
+	margin-top: 6px;
+}
+
+.main-body{
+	font-family: 'Palatino','Palatino Linotype','Book Antiqua',serif;
+	font-size: 18px;
+	margin-top:15px;
+	line-height: 140%;
+}
+
+#module-1-img{
+	cursor: pointer;
+}
+
+
+
+/* FOCUS */
+
+#focus-holder{
+	width: 734px;
+	height: 413px;
+	position:absolute;
+	top: 30px;
+	left: 30px;
+}
+
+.img-fade{
+	position:absolute;
+	top:0;
+}
+
+/* FAQ */
+#faq{
+	xborder: blue solid 1px;
+	height: 300px;
+	max-width: 1300px;
+	margin: 0 auto;
+}
+
+#faq-header-label{
+	font-family: 'Nobel';
+	font-size: 24px;
+	letter-spacing: 4px;
+	position: absolute;
+	left: 0;
+}
+
+#faq-header{
+	width: 100%;
+	height: 42px;
+	border-bottom: #999 dotted 1px;
+	position: relative;
+}
+
+#faq-header-arrow{
+	width: 17px;
+	height: 11px;
+	position: absolute;
+	right: 0;
+	top: 10px;
+	background-image: url('../../res/img/down-arrow.png');
+}
+
+/* DEALER LIST */
+
+#dealers{
+	xborder: green solid 1px;
+	max-width: 1300px;
+	margin: 0 auto;
+}
+
+#dealers-top{
+	text-align: center;
+	opacity: 0;
+}
+
+#dealers-subheader{
+	width: 670px;
+	border-top: 2px solid #FFF;
+	margin: 16px auto 140px auto;
+	padding-top: 16px;
+}
+
+#dealer-list{
+	xborder: yellow solid 1px;
+	max-width: 1040px;
+	margin: 0 auto;
+}
+
+.dealer{
+	position: relative;
+	width: 510px;
+	height: 235px;
+	background-image: url('../../res/img/dealer.png');
+	margin-top: -50px;
+	opacity: 0;
+}
+
+.lefty2{
+	left: 0px;
+	xborder: solid red 1px;
+}
+
+.righty2{
+	right: 0;
+	left: 530px;
+	xborder: solid green 1px;
+}
+
+/* MISC */
+
+
+#debug{
+	position: fixed;
+	top:0;
+	right:0;
+	font-size: 20px;
+	color: #0f0;
+	z-index: 999;
+	background-color: rgba(0,0,0,0.8);
+	width: 200px;
+	height: 20px;
+	xdisplay:none;
+}
